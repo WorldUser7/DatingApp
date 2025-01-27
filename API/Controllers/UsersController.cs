@@ -1,14 +1,15 @@
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
-[ApiController]
-[Route("api/[controller]")] // /api/users
+
  
-public class UsersController(DataContext context) : ControllerBase
+public class UsersController(DataContext context) : BaseApiController
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
     {
@@ -17,7 +18,10 @@ public class UsersController(DataContext context) : ControllerBase
         return users; //other returns(they are called Http responses): return NotFound, return BadRequest
     }
 
+
+
 // HttpGet("{id:int}") this is telling us that the method is HttpGet and because we already have one we cannot have another one the same, so we specify that we want a type of id, and we also add a constrain for the type to be int
+    [Authorize]
     [HttpGet("{id:int}")]  // /api/users/3
     public async Task<ActionResult<AppUser>> GetUser(int id) // we are returning an AppUser object
     {
